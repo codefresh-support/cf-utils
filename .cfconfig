@@ -1,0 +1,44 @@
+contexts:
+  codefresh:
+    type: APIKey
+    name: codefresh
+    url: 'https://g.codefresh.io'
+    token: 6136896cfdc67478b4166190.324ced742cd50330797a939b093f1336
+    beta: false
+    onPrem: true
+  default:
+    type: APIKey
+    name: default
+    url: 'https://g.codefresh.io'
+    token: 613687c0ea454d4818aa0947.7d1a37072384833275d02f657303b323
+    beta: false
+    onPrem: false
+  user-test:
+    type: APIKey
+    name: user-test
+    url: 'https://g.codefresh.io'
+    token: 615c1242cce47801630ef7bf.0803994635fe854316b28bbc07c377e3
+    beta: false
+    onPrem: true
+  v2:
+    type: APIKey
+    name: v2
+    url: 'https://g.codefresh.io'
+    token: 615d989f549cf3389ffecb62.9beb4c003dcee9b56e378fa42c2ddf3e
+    beta: false
+    onPrem: true
+  cf-runner:
+    type: APIKey
+    name: cf-runner
+    url: 'https://g.codefresh.io'
+    token: 613687c0ea454d4818aa0947.7d1a37072384833275d02f657303b323
+    beta: false
+    onPrem: false
+  cf-support-package:
+    type: APIKey
+    name: cf-support-package
+    url: 'https://g.codefresh.io'
+    token: 618a599412a0dc2c5af28d29.c71d3a46b5a8b9fb3380da507e423f6a
+    beta: false
+    onPrem: true
+current-context: codefresh

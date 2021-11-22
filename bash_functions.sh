@@ -56,4 +56,3 @@ function dir()
   #echo "find ${dir:-.} -maxdepth ${depth:-1} -type f -exec grep ${grep_opts} {} -e \"$expr\" \;"
   find ${dir:-.} -maxdepth ${depth:-1} -type f -exec grep ${grep_opts} {} -e "$expr" \;
 }
-
