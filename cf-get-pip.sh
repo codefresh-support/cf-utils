@@ -33,7 +33,7 @@ test -s "$dump_file" || { echo "No data retrieved"; exit 1; }
 # that will allow pipelines to be processed in a loop.
 
 declare -a pipelines    # store filenames here
-echo "l: $length"
+length=$( jq length $dump_file )
 for((i=0; i < $length; i++))
 do
   pipelines[$i]=`mktemp`    # generate temporary filename
