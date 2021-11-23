@@ -11,7 +11,7 @@ cfconfig=~/.cfconfig
 test -e "$cfconfig" || { echo "Config file is missing"; exit 1; }
 
 # Context
-ctx=$( sed -n '/^current/ s/.* \(\w\+\)/\1/p' ~/.cfconfig ) 
+ctx=$( cat ~/.cfconfig | yq e '."current-context"' -)
 # Token
 token=$( cat ~/.cfconfig | yq e - -o=json | jq -r ".contexts.$ctx.token" )
 
@@ -19,7 +19,7 @@ token=$( cat ~/.cfconfig | yq e - -o=json | jq -r ".contexts.$ctx.token" )
 dump_file=`mktemp`
 
 # Get pipeline using same syntax as for native 'cf get pip'
-eval $(echo codefresh get pip "$@" | sed 's/\<yaml\>/json/') | jq 'if type == "object" then [.] else . end' 2>/dev/null > $dump_file
+eval $(echo codefresh get pip "$@" | sed 's/-o *yaml/-o json/') | jq 'if type == "object" then [.] else . end' 2>/dev/null > $dump_file
 
 #+ always store in json array to fit further processing
 
@@ -81,12 +81,10 @@ do
     # Only the steps in json, needed by yq to substitute current value
     steps=$( echo "$from_repo" | yq -P e .content - | yq e .steps - -o=json)
 
-    #DEBUG
-    echo "$steps"
-
     # Append modified pipeline file output to the dump file. Remove .spec.specTemplate, rewrite
     # steps.
-    cat $file | yq -P e "del(.spec.specTemplate),.spec.steps=$steps" - >> $dump_file
+    #cat $file | yq -P e "del(.spec.specTemplate),.spec.steps=$steps" - >> $dump_file
+    cat $file | yq -P e ".spec.steps=$steps" - >> $dump_file
   else
   # if .spec.specTemplate property was not present in the pipeline, then just append file as it
     cat $file >> $dump_file
