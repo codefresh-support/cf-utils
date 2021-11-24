@@ -26,7 +26,7 @@ dump_file=`mktemp`
 
 # Get pipeline using same syntax as for native 'cf get pip'. Store format that pipeline was initialy requested,
 # to output it properly at the end.
-format=`echo $@ | sed -n 's/.*\(yaml\|json\).*/\1/p'`
+format=`echo $@ | sed -n 's/.*-o *\(yaml\|json\).*/\1/p'`
 
 # Handle the case when format was not specified
 if test -z "$format" 
