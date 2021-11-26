@@ -5,7 +5,7 @@
 
 test -n "$1" || \
   { echo "Wrapper around \`codefresh get pipeline'"; 
-    echo "Run \`ccodefresh get pipeline --help' for the detailed usage message";
+    echo "Run \`codefresh get pipeline --help' for the detailed usage message";
     #echo "In case of questions on script implementation and desired modifications contact Codefresh support."
     exit 1; 
   }
@@ -19,7 +19,7 @@ test -e "$cfconfig" || { echo "Config file is missing"; exit 1; }
 # Context
 ctx=$( cat ~/.cfconfig | yq e '."current-context"' -)
 # Token
-token=$( cat ~/.cfconfig | yq e - -o=json | jq -r ".contexts.$ctx.token" )
+token=$( cat ~/.cfconfig | yq e ".contexts.$ctx.token" -  | tr -d \" ) # -o=json ) #| jq -r ".contexts.$ctx.token" )
 
 # Create dump file for json manipulation. Will hold initial output of `cf get pip`
 dump_file=`mktemp`
@@ -80,7 +80,7 @@ do
     cat $file | yq -P e ".spec.specTemplate.steps |= $steps" - >> $dump_file
   else
   # if .spec.specTemplate property was not present in the pipeline, then just append file as it
-    cat $file >> $dump_file
+    cat $file | yq -P e - >> $dump_file
   fi
 done
 
@@ -89,7 +89,7 @@ done
 
 # Print modified pipeline(s) defition with the initial format
 
-cat $dump_file | yq -P e - -o="$format"
+cat $dump_file | yq -P e . -  -o=$format
 
 # Remove temporary files
 rm $dump_file ${pipelines[@]}
