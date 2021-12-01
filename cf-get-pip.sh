@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-# Append yaml from repo under .spec.specTemplates.steps. That will keep output
+# Get yaml from repo under .spec.specTemplates.steps. That will keep output
 # of `cf get pip` updated with real steps defintion when "yaml from repo" is used.
 
 test -n "$1" || \
   { echo "Wrapper around \`codefresh get pipeline'"; 
-    echo "Run \`codefresh get pipeline --help' for the detailed usage message";
+    echo "Run \`codefresh get pipeline --help' for the available options";
     #echo "In case of questions on script implementation and desired modifications contact Codefresh support."
     exit 1; 
   }
@@ -19,77 +19,68 @@ test -e "$cfconfig" || { echo "Config file is missing"; exit 1; }
 # Context
 ctx=$( cat ~/.cfconfig | yq e '."current-context"' -)
 # Token
-token=$( cat ~/.cfconfig | yq e ".contexts.$ctx.token" -  | tr -d \" ) # -o=json ) #| jq -r ".contexts.$ctx.token" )
+token=$( cat ~/.cfconfig | yq e ".contexts.$ctx.token" -  | tr -d \" ) 
 
 # Create dump file for json manipulation. Will hold initial output of `cf get pip`
-dump_file=`mktemp`
+dump_file=`mktemp --tmpdir=. -t .XXXXXX`
 
-# Get pipeline using same syntax as for native 'cf get pip'. Store format that pipeline was initialy requested,
-# to output it properly at the end.
+# Keep original format
 format=`echo $@ | sed -n 's/.*-o *\(yaml\|json\).*/\1/p'`
 
-# Handle the case when format was not specified
+# If format was not specified no steps are dumped, conform with original command
 if test -z "$format" 
 then 
   codefresh get pip $@
   exit
-else
-  # Always store command output in json array to fit further processing
-  eval $(echo codefresh get pip "$@" | sed 's/'"$format"'/json/') | jq 'if type == "object" then [.] else . end' 2>/dev/null > $dump_file
 fi
-test -s "$dump_file" || { echo "No data retrieved"; exit 1; }
+
+# Run the command and store output in json array to fit further processing
+eval $(echo codefresh get pip "$@" | sed 's/'"$format"'/json/') | jq 'if type == "object" then [.] else . end' 2>/dev/null > $dump_file
+
+# Fail if no data was retrieved
+test -s "$dump_file" || { echo "No data was retrieved"; rm $dump_file;  exit 1; }
+
 #Check this file for the dump if needed
 #echo $dump_file
 
-# Handle the case when we have multiple pipelines in dump. Each pipeline
-# will be put in separate file and each filename will be added to array,
-# that will allow pipelines to be processed in a loop.
-
-declare -a pipelines    # store filenames here
-length=$( jq length $dump_file )
-for((i=0; i < $length; i++))
-do
-  pipelines[$i]=`mktemp`    # generate temporary filename
-  jq ".[$i]" $dump_file > ${pipelines[$i]}  # store filename at index (i)
-
-  #echo "[DEBUG] pipelines[$i]: ${pipelines[$i]} `jq '.metadata.name' ${pipelines[$i]}"
-done
-
-# We removing file now in order to overwrite it with modified pipelines
-rm $dump_file # will be rewritten with the up-to-dated pipelines
-
-# Process each file in loop and collect it's output in one file
-for file in ${pipelines[@]}
+# Iterate through pipeline id's and operate on corresponding blocks of definition within single file
+for id in $( cat $dump_file | yq eval '.[].metadata.id' - )
 do
   # Get data needed for API call from .spec.specTemplate
-  request_data="$( cat $file | yq eval '.spec.specTemplate' -P - )"
-
+  request_data=$( yq --prettyPrint eval '.[] | select(.metadata.id == "'$id'").spec.specTemplate' $dump_file )
+  
   # if .spec.specTemplate field was present
   if grep -qv null <<<"$request_data";
   then 
-  # initialize variables
-    eval $( echo "$request_data" | sed 's/: */=/' )
+  # initialize variables for the call
+    eval $( echo "$request_data" | sed 's/: */=/;' | sed '/path/ {s,./,,; s,/,%2F,g}' )
 
     # Get yaml from repository
-    from_repo=$( curl -s -X GET -H "Authorization: $token" https://g.codefresh.io/api/repos/${repo}/${revision}/${path#*/}?context=${context} )
+    from_repo=$( curl -s -X GET -H "Authorization: $token" https://g.codefresh.io/api/repos/${repo}/${revision}/${path/}?context=${context} )
 
-    # Get only the steps in json, needed by yq to substitute current value
-    steps=$( echo "$from_repo" | yq -P e .content - | yq e .steps - -o=json)
+    # Get only the steps in json
+    steps=$( echo "$from_repo" | yq e .content - | yq e .steps - -o=json)
 
-    # Append steps under .spec.specTemplate.steps
-    cat $file | yq -P e ".spec.specTemplate.steps |= $steps" - >> $dump_file
-  else
-  # if .spec.specTemplate property was not present in the pipeline, then just append file as it
-    cat $file | yq -P e - >> $dump_file
+    # Write steps under .spec.specTemplate.steps
+    yq -P -i e '( .[] | select(.metadata.id == "'$id'").spec.specTemplate.steps |= '"$steps"') | [.]' $dump_file
   fi
 done
 
-# This way we were successful to emulate same output as requested with the native syntax and allowing
-# multi-pipeline query.
+# When multiline pipelines, put them under items array; conforming to the `cf get pip -o yaml` output
+if [ `yq eval length $dump_file` -gt 1 ]
+then
+  if [ $format = yaml ]
+  then
+    yq -P -i e '. = {"items": .}'  $dump_file 
+  fi
+  # no modification is needed for json
+else
+  # when single pipeline, remove it from the array
+  yq -i e '.[]' $dump_file
+fi
 
-# Print modified pipeline(s) defition with the initial format
-
-cat $dump_file | yq -P e . -  -o=$format
+# Print out up-to-dated pipelines
+yq -P e . -o=$format $dump_file 
 
 # Remove temporary files
-rm $dump_file ${pipelines[@]}
+rm $dump_file 
