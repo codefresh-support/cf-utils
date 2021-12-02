@@ -89,12 +89,15 @@ function pipid() {
 #
 # Get token for the specific or current context
 function cf_token() {
-  if [ -z $1 ]; then
+#  if [ -z $1 ]; then
     ctx=$(cf_ctx) # get current context name
-  else
-    ctx=$1
-  fi
-  cat ~/.cfconfig | yq e ".context.$ctx.token" - | tr -d \"
+  #else
+    #ctx=$1
+  #fi
+  #exit
+  cfconfig=${1:-~/.cfconfig}
+  #echo "$cfconfig"
+  cat $cfconfig | yq e ".contexts.$ctx.token" - | tr -d \"
 }
 
 # Set CF_API_KEY with the token of the specified or current context

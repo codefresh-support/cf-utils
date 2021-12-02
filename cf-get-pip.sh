@@ -11,7 +11,8 @@ test -n "$1" || \
   }
 
 
-echo "$CF_API_KEY"
+# CF_API_KEY can be exported before, so config file parsing happens. Useful
+# when ~/.config file is not in the standard location.
 if [ -z "$CF_API_KEY" ]; then
   # Path to config file, required to retrieve API token
   cfconfig=~/.cfconfig
@@ -91,4 +92,5 @@ fi
 yq -P e . -o=$format $dump_file 
 
 # Remove temporary files
+#echo $dump_file
 rm $dump_file 
