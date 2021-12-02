@@ -94,7 +94,7 @@ function cf_token() {
   else
     ctx=$1
   fi
-  cat ~/.cfconfig | tojson | jq -r '.contexts.'$ctx'.token'
+  cat ~/.cfconfig | yq e ".context.$ctx.token" - | tr -d \"
 }
 
 # Set CF_API_KEY with the token of the specified or current context

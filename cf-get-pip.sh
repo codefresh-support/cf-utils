@@ -10,16 +10,24 @@ test -n "$1" || \
     exit 1; 
   }
 
-# Path to config file, required to retrieve API token
-cfconfig=~/.cfconfig
 
-# Must have before we do anything at all..
-test -e "$cfconfig" || { echo "Config file is missing"; exit 1; }
+echo "$CF_API_KEY"
+if [ -z "$CF_API_KEY" ]; then
+  # Path to config file, required to retrieve API token
+  cfconfig=~/.cfconfig
 
-# Context
-ctx=$( cat ~/.cfconfig | yq e '."current-context"' -)
-# Token
-token=$( cat ~/.cfconfig | yq e ".contexts.$ctx.token" -  | tr -d \" ) 
+  # Must have before we do anything at all..
+  test -e "$cfconfig" || { echo "Config file is missing"; exit 1; }
+
+  # Context
+  ctx=$( cat ~/.cfconfig | yq e '."current-context"' -)
+
+  # Token
+  CF_API_KEY=$( cat ~/.cfconfig | yq e ".contexts.$ctx.token" -  | tr -d \" ) 
+fi
+
+
+### Done with token part
 
 # Create dump file for json manipulation. Will hold initial output of `cf get pip`
 dump_file=`mktemp --tmpdir=. -t .XXXXXX`
@@ -56,7 +64,7 @@ do
     eval $( echo "$request_data" | sed 's/: */=/;' | sed '/path/ {s,./,,; s,/,%2F,g}' )
 
     # Get yaml from repository
-    from_repo=$( curl -s -X GET -H "Authorization: $token" https://g.codefresh.io/api/repos/${repo}/${revision}/${path/}?context=${context} )
+    from_repo=$( curl -s -X GET -H "Authorization: $CF_API_KEY" https://g.codefresh.io/api/repos/${repo}/${revision}/${path/}?context=${context} )
 
     # Get only the steps in json
     steps=$( echo "$from_repo" | yq e .content - | yq e .steps - -o=json)
