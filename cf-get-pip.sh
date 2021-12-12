@@ -36,7 +36,7 @@ format=`echo $@ | sed -n 's/.*-o *\(yaml\|json\).*/\1/p'`
 # If format was not specified no steps are dumped, conform with original command
 if test -z "$format" 
 then 
-  codefresh get pip $@
+  codefresh get pip "$@"
   exit
 fi
 
