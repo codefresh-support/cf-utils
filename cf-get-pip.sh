@@ -30,9 +30,6 @@ fi
 
 ### Done with token part
 
-# Create dump file for json manipulation. Will hold initial output of `cf get pip`
-dump_file=`mktemp --tmpdir=. -t .XXXXXX`
-
 # Keep original format
 format=`echo $@ | sed -n 's/.*-o *\(yaml\|json\).*/\1/p'`
 
@@ -42,6 +39,9 @@ then
   codefresh get pip $@
   exit
 fi
+
+# Just a random string, avoiding mktemp(1) because of compatibility issues with MacOS.
+dump_file=.6jzZcSfWCd
 
 # Run the command and store output in json array to fit further processing
 eval $(echo codefresh get pip "$@" | sed 's/'"$format"'/json/') | jq 'if type == "object" then [.] else . end' 2>/dev/null > $dump_file
