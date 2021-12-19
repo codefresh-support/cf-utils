@@ -10,19 +10,25 @@ test -n "$1" || \
     exit 1; 
   }
 
-# Path to config file, required to retrieve API token
-cfconfig=~/.cfconfig
 
-# Must have before we do anything at all..
-test -e "$cfconfig" || { echo "Config file is missing"; exit 1; }
+# CF_API_KEY can be exported before, so config file parsing happens. Useful
+# when ~/.config file is not in the standard location.
+if [ -z "$CF_API_KEY" ]; then
+  # Path to config file, required to retrieve API token
+  cfconfig=~/.cfconfig
 
-# Context
-ctx=$( cat ~/.cfconfig | yq e '."current-context"' -)
-# Token
-token=$( cat ~/.cfconfig | yq e ".contexts.$ctx.token" -  | tr -d \" ) 
+  # Must have before we do anything at all..
+  test -e "$cfconfig" || { echo "Config file is missing"; exit 1; }
 
-# Create dump file for json manipulation. Will hold initial output of `cf get pip`
-dump_file=`mktemp --tmpdir=. -t .XXXXXX`
+  # Context
+  ctx=$( cat ~/.cfconfig | yq e '."current-context"' -)
+
+  # Token
+  CF_API_KEY=$( cat ~/.cfconfig | yq e ".contexts.$ctx.token" -  | tr -d \" ) 
+fi
+
+
+### Done with token part
 
 # Keep original format
 format=`echo $@ | sed -n 's/.*-o *\(yaml\|json\).*/\1/p'`
@@ -30,9 +36,12 @@ format=`echo $@ | sed -n 's/.*-o *\(yaml\|json\).*/\1/p'`
 # If format was not specified no steps are dumped, conform with original command
 if test -z "$format" 
 then 
-  codefresh get pip $@
+  codefresh get pip "$@"
   exit
 fi
+
+# Just a random string, avoiding mktemp(1) because of compatibility issues with MacOS.
+dump_file=.6jzZcSfWCd
 
 # Run the command and store output in json array to fit further processing
 eval $(echo codefresh get pip "$@" | sed 's/'"$format"'/json/') | jq 'if type == "object" then [.] else . end' 2>/dev/null > $dump_file
@@ -56,7 +65,7 @@ do
     eval $( echo "$request_data" | sed 's/: */=/;' | sed '/path/ {s,./,,; s,/,%2F,g}' )
 
     # Get yaml from repository
-    from_repo=$( curl -s -X GET -H "Authorization: $token" https://g.codefresh.io/api/repos/${repo}/${revision}/${path/}?context=${context} )
+    from_repo=$( curl -s -X GET -H "Authorization: $CF_API_KEY" https://g.codefresh.io/api/repos/${repo}/${revision}/${path/}?context=${context} )
 
     # Get only the steps in json
     steps=$( echo "$from_repo" | yq e .content - | yq e .steps - -o=json)
@@ -83,4 +92,5 @@ fi
 yq -P e . -o=$format $dump_file 
 
 # Remove temporary files
+#echo $dump_file
 rm $dump_file 
