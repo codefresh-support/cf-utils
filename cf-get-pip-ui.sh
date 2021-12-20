@@ -71,7 +71,7 @@ do
     steps=$( echo "$from_repo" | yq e .content - | yq e .steps - -o=json)
 
     # Write steps under .spec.specTemplate.steps
-    yq -P -i e '( .[] | select(.metadata.id == "'$id'").spec.steps |= '"$steps"') | [.]' $dump_file
+    yq -P -i e '( .[] | select(.metadata.id == "'$id'").spec.specTemplate.steps |= '"$steps"') | [.]' $dump_file
   fi
 done
 
