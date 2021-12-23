@@ -1,55 +1,15 @@
-version: "1.0"
+version: '1.0'
 kind: pipeline
 metadata:
   name: emburse/Parallel Clone
   project: emburse
   projectId: 619a033e9ff69ea33586daff
-  revision: 4
+  revision: 7
   accountId: 612c9a543ba6265134394298
-  created_at: "2021-12-16T13:10:26.609Z"
-  updated_at: "2021-12-16T13:56:46.949Z"
+  created_at: '2021-12-16T13:10:26.609Z'
+  updated_at: '2021-12-20T16:34:55.891Z'
   shortName: parallel clone
   deprecate: {}
-  originalYamlString: |+
-    # More examples of Codefresh YAML can be found at
-    # https://codefresh.io/docs/docs/yaml-examples/examples/
-
-    version: "1.0"
-    # Stages can help you organize your steps in stages
-    stages:
-      - "clone"
-      - "build"
-      - "test"
-
-    steps:
-      clone:
-        title: "Cloning repository"
-        type: "git-clone"
-        repo: "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}"
-        # CF_BRANCH value is auto set when pipeline is triggered
-        # Learn more at codefresh.io/docs/docs/codefresh-yaml/variables/
-        revision: "${{CF_BRANCH}}"
-        git: "Codefresh"
-        stage: "clone"
-
-      build:
-        title: "Building Docker image"
-        type: "build"
-        image_name: "olegcf/mariadb"
-        working_directory: "${{clone}}"
-        tag: "${{CF_BRANCH_TAG_NORMALIZED}}"
-        dockerfile: "Dockerfile"
-        stage: "build"
-
-      test:
-        title: "Running test"
-        type: "freestyle" # Run any command
-        image: "ubuntu:latest" # The image in which command will be executed
-        working_directory: "${{clone}}" # Running command where code cloned
-        commands:
-          - "ls"
-        stage: "test"
-
   id: 61bb3ac293c1e6d8ce1136b0
 spec:
   triggers:
@@ -77,40 +37,17 @@ spec:
   contexts: []
   specTemplate:
     location: git
-    repo: olegcf/cf-utils
+    repo: codefresh-support/cf-utils
     path: ./cf-yaml/clone-in-parallel.yaml
     revision: emburse
     context: Codefresh
-    steps:
-      clone:
-        title: Cloning repository
-        type: git-clone
-        repo: olegcf/mariadb
-        revision: master
-        git: Codefresh
-        stage: clone
+  stages:
+    - clone
   steps:
     clone:
       title: Cloning repository
       type: git-clone
-      repo: ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}
-      revision: ${{CF_BRANCH}}
+      repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+      revision: '${{CF_BRANCH}}'
       git: Codefresh
       stage: clone
-    build:
-      title: Building Docker image
-      type: build
-      image_name: olegcf/mariadb
-      working_directory: ${{clone}}
-      tag: ${{CF_BRANCH_TAG_NORMALIZED}}
-      dockerfile: Dockerfile
-      stage: build
-    test:
-      title: Running test
-      type: freestyle
-      image: ubuntu:latest
-      working_directory: ${{clone}}
-      commands:
-        - ls
-      stage: test
-  stages: []
