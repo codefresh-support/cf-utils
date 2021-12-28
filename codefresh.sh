@@ -84,24 +84,26 @@ function pipid() {
   #PIP_NAME=$( cf get pip $PIP_ID -o json | jq '.metadata.name' )
 }
 
+################# Retrieving Token ###########################
 
 # Usage: cf_token [CONTEXT_NAME]
 #
-# Get token for the specific or current context
+# Get token for the specific or current context. Add a check for the 
 function cf_token() {
-#  if [ -z $1 ]; then
-    ctx=$(cf_ctx) # get current context name
-  #else
-    #ctx=$1
-  #fi
-  #exit
-  cfconfig=${1:-~/.cfconfig}
-  #echo "$cfconfig"
-  cat $cfconfig | yq e ".contexts.$ctx.token" - | tr -d \"
+  #ctx=$(cf auth current-context | tail -n1 | awk "{print $2}") 
+  # No filename was passed. Use default config file.
+  test $CF_API_KEY && return $CF_API_KEY
+  if [ -z "$CFCONFIG" ]; then
+    CFCONFIG=${1:-~/.cfconfig}
+  fi
+  set +x
+  ctx=$(cat $CFCONFIG | yq e ".current-context" -)
+  cat $CFCONFIG | yq e ".contexts.$ctx.token" - | tr -d \"
 }
 
 # Set CF_API_KEY with the token of the specified or current context
 function cf_api_key() {
+  #cf_token
   export CF_API_KEY=$( cf_token $1 )
 }
 
@@ -128,7 +130,6 @@ function keys() {
 ################# Aliases
 
 # Return only name of the current context:
-alias cf_ctx="cf auth current-context | tail -n1 | awk '{print \$2}'"
 
 # json stuff
 alias jvim='vim -c "set ft=json" -'
