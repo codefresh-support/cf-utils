@@ -1,4 +1,4 @@
-#### Just a functions for easier life ####
+#### Few functions for easier life ####
 
 #  
 # Usage: [GREP_OPTS] dir [DIR] [DEPTH] EXPR

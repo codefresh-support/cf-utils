@@ -21,10 +21,10 @@ if [ -z "$CF_API_KEY" ]; then
   test -e "$cfconfig" || { echo "Config file is missing"; exit 1; }
 
   # Context
-  ctx=$( cat ~/.cfconfig | yq e '."current-context"' -)
+  ctx=$( cat $cfconfig | yq e '."current-context"' -)
 
   # Token
-  CF_API_KEY=$( cat ~/.cfconfig | yq e ".contexts.$ctx.token" -  | tr -d \" ) 
+  CF_API_KEY=$( cat $cfconfig | yq e ".contexts.$ctx.token" -  | tr -d \" ) 
 fi
 
 
