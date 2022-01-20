@@ -3,9 +3,11 @@
 # Delete CSDP runtime:
 
 RE="$1"
-codefresh runtime uninstall --force "$RE"
+cf runtime uninstall --force "$RE"
 
 # 
-kubectl get applications $RE -o yaml > $RE.yaml
+kubectl delete all --all -n "$RE"
+kubectl delete ns "$RE" &
+kubectl get applications -n $RE -o yaml > $RE.yaml
 yq -P -i e 'del(.items[].metadata.finalizers)' $RE.yaml
 kubectl replace -f $RE.yaml
