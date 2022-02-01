@@ -88,11 +88,12 @@ function pipid() {
 
 # Usage: cf_token [CONTEXT_NAME]
 #
-# Get token for the specific or current context. Add a check for the 
+# Get token for the specific or current context.
 function cf_token() {
   #ctx=$(cf auth current-context | tail -n1 | awk "{print $2}") 
+
+
   # No filename was passed. Use default config file.
-  test $CF_API_KEY && return $CF_API_KEY
   if [ -z "$CFCONFIG" ]; then
     CFCONFIG=${1:-~/.cfconfig}
   fi
@@ -103,8 +104,8 @@ function cf_token() {
 
 # Set CF_API_KEY with the token of the specified or current context
 function cf_api_key() {
-  #cf_token
   export CF_API_KEY=$( cf_token $1 )
+  echo "CF_API_KEY set"
 }
 
 # Wrapper around jq(1). Without arguments or when dot is added at the very
