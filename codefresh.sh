@@ -116,7 +116,7 @@ function cf_api_key() {
 # cat pipeline.json | keys    # only top level keys
 # cat pipeline.json | keys spec   # all the values under .spec
 # cat pipeline.json | keys spec.steps.   # only keys under steps, note the "dot"
-function keys() {
+function jk() {
   if [ $# -eq 0 ]
   then
     cmdline="keys"
