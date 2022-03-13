@@ -1,0 +1,39 @@
+---
+accountId: 612c9a543ba6265134394298
+description: 'Runtime environment configure to cluster: oleg.sergiyuk@codefresh.io@oleg-cluster.us-east-1.eksctl.io and namespace: runner'
+dockerDaemonScheduler:
+  annotations: {}
+  cluster:
+    clusterProvider:
+      accountId: 612c9a543ba6265134394298
+      selector: oleg.sergiyuk@codefresh.io@oleg-cluster.us-east-1.eksctl.io
+    namespace: runner
+    serviceAccount: codefresh-engine
+  defaultDindResources:
+    requests:
+      cpu: 1000m
+      memory: 2000mi
+  pvcs:
+    dind:
+      storageClassName: dind-local-volumes-runner-runner
+  userAccess: 'true'
+extends:
+  - system/default/hybrid/k8s_low_limits
+metadata:
+  agent: 'true'
+  changedBy: codefresh-oleg
+  creationTime: '2022/03/02 20:35:05'
+  name: oleg.sergiyuk@codefresh.io@oleg-cluster.us-east-1.eksctl.io/run
+  trial:
+    endingAt: '1647462903797'
+    reason: 'Codefresh hybrid runtime'
+    started: '1646253303817'
+runtimeScheduler:
+  annotations: {}
+  cluster:
+    clusterProvider:
+      accountId: 612c9a543ba6265134394298
+      selector: oleg.sergiyuk@codefresh.io@oleg-cluster.us-east-1.eksctl.io
+    namespace: runner
+    serviceAccount: codefresh-engine
+version: '1'
