@@ -6,12 +6,12 @@ A set of scripts to help with Codefresh Software Delivery Platform Management
 
 A script to remove all the parts that may have been left behind after a failed uninstallation for the runtime.
 
-### Pre Requisites
+### Pre-requisites
 
 To run this command you need to create a personal access token for your git provider and provide it using:
 
 ```
-        export GIT_TOKEN=<token>
+export GIT_TOKEN=<token>
 ```
 
 ### Parameters:
@@ -20,4 +20,6 @@ To run this command you need to create a personal access token for your git prov
 
 ### Usage
 
+```
 ./csdp-runtime-uninstall.sh RUNTIME_NAME
+```
