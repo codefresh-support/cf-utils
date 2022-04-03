@@ -105,7 +105,7 @@ function cf_token() {
 # Set CF_API_KEY with the token of the specified or current context
 function cf_api_key() {
   export CF_API_KEY=$( cf_token $1 )
-  echo "CF_API_KEY set"
+  #echo "CF_API_KEY set"
 }
 
 # Wrapper around jq(1). Without arguments or when dot is added at the very
