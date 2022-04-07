@@ -16,9 +16,9 @@ cf runtime uninstall --force "$NAME" --silent
 
 echo "Deleting remaining objects"
 # Edit apps to remove finalizers
-for i in $(kubectl get applications -o $NAME)
+for i in $(kubectl get applications -o name -n $NAME)
 do
-  kubectl patch  $i --type json --patch='[ { "op": "remove", "path": "/metadata/finalizers" } ]'
+  kubectl patch  $i --type json --patch='[ { "op": "remove", "path": "/metadata/finalizers" } ]' -n $NAME
 done
 for OBJ in apps deployments replicaset pods service statefulset
 do
