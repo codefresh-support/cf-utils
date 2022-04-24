@@ -1,8 +1,7 @@
-# User-defined functions
-# see at the bottom of the file for aliases
+# User-defined functions, see at the bottom of the file for aliases
 
 # Expects one argument to be tested against pattern. Returns true (0) if 
-#  numeric or false (1) otherwise.
+# numeric or false (1) otherwise.
 is_numeric() {
   n=$1
   #declare -n n=$1
