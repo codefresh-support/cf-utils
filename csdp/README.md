@@ -2,9 +2,9 @@
 
 A set of scripts to help with Codefresh Software Delivery Platform Management
 
-## cf-runtime-uninstall.sh
+## cf-runtime-uninstall.sh csdp-runtime-uninstall.sh
 
-A script to remove all the parts that may have been left behind after a failed uninstallation for the runtime.
+A scripts to remove all the parts that may have been left behind after a failed uninstallation for the runtime.
 
 ### Pre-requisites
 
@@ -22,4 +22,8 @@ export GIT_TOKEN=<token>
 
 ```
 ./csdp-runtime-uninstall.sh RUNTIME_NAME
+```
+
+```
+./cf-runtime-unistall RUNTIME_NAME
 ```
