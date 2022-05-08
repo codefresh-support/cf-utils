@@ -14,6 +14,10 @@ if [ -z "$cmd" ]; then
   echo "matching CF_FLAGS are printed. Only one tag can be added per execution."
   exit 0
 fi
+if [ -z "$tag" ]; then
+  codefresh get pipeline $cmd --limit 1000 -o wide
+  exit
+fi
 
 # Setup working directory
 test -d 8j1riZ3ksq && rm -rf 8j1riZ3ksq
