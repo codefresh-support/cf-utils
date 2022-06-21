@@ -1,0 +1,122 @@
+[
+  {
+    "_id": "6116c86039836189de43441b",
+    "userName": "olegse",
+    "email": "oleg.sergiyuk@gmail.com",
+    "notificationEmail": "oleg.sergiyuk@gmail.com",
+    "roles": [
+      "User"
+    ],
+    "defaultAccount": 0,
+    "account": [
+      "6116c860398361ee8943441c",
+      "612c9a543ba6265134394298"
+    ],
+    "status": "new",
+    "user_data": {
+      "emails": [
+        "oleg.sergiyuk@gmail.com"
+      ],
+      "email": "oleg.sergiyuk@gmail.com",
+      "image": "https://lh3.googleusercontent.com/a/AATXAJxX0QI01QS8-k2d8B8FctQ9CLqMFfcT8selhQqo=s50-mo",
+      "name": "Oleg Sergiyuk"
+    },
+    "register_date": "2021-08-13T19:30:40.902Z",
+    "last_login_date": "2022-06-15T09:09:59.912Z",
+    "hasPassword": false,
+    "notifications": [
+      {
+        "events": [
+          "build-success",
+          "build-failure"
+        ],
+        "type": "mail",
+        "mail": {}
+      }
+    ],
+    "shortProfile": {
+      "userName": "olegse"
+    },
+    "settings": {
+      "sendWeeklyReport": true,
+      "allowAdminToLogin": true,
+      "filterInaccessibleKubernetes": true
+    },
+    "logins": [
+      {
+        "userId": "116595162849891501189",
+        "personalGit": false,
+        "permissions": [],
+        "idp": {
+          "id": "5b7018a3c3567008431464d6"
+        }
+      },
+      {
+        "userId": "12506278",
+        "userName": "olegse",
+        "personalGit": false,
+        "permissions": [],
+        "idp": {
+          "id": "5b701851c3567008431464d3"
+        }
+      }
+    ]
+  },
+  {
+    "_id": "612c9a543ba6264c27394297",
+    "userName": "codefresh-oleg",
+    "email": "oleg.sergiyuk@codefresh.io",
+    "notificationEmail": "oleg.sergiyuk@codefresh.io",
+    "roles": [
+      "User",
+      "Admin"
+    ],
+    "defaultAccount": 0,
+    "account": [
+      "612c9a543ba6265134394298",
+      "5f8db07b4e6ba71a9d6a4bdb",
+      "6116c860398361ee8943441c"
+    ],
+    "status": "new",
+    "user_data": {
+      "emails": [
+        "oleg.sergiyuk@codefresh.io"
+      ],
+      "email": "oleg.sergiyuk@codefresh.io",
+      "image": "https://lh3.googleusercontent.com/a-/AOh14Gg1Lb_9rW8zRKvr9T93MdlseRl077YtDiUl7TZS=s50",
+      "name": "Oleg Sergiyuk"
+    },
+    "register_date": "2021-08-30T08:44:05.120Z",
+    "last_login_date": "2022-03-20T14:48:08.945Z",
+    "hasPassword": false,
+    "notifications": [
+      {
+        "events": [
+          "build-failure",
+          "build-success"
+        ],
+        "type": "mail",
+        "mail": {}
+      }
+    ],
+    "shortProfile": {
+      "userName": "codefresh-oleg"
+    },
+    "settings": {
+      "sendWeeklyReport": true,
+      "allowAdminToLogin": true,
+      "filterInaccessibleKubernetes": false,
+      "notifyMyChanges": true
+    },
+    "logins": [
+      {
+        "userId": "117966524707647078489",
+        "personalGit": false,
+        "permissions": [],
+        "idp": {
+          "id": "5b7018a3c3567008431464d6"
+        }
+      }
+    ]
+  }
+]
