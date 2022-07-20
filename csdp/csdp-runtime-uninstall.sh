@@ -20,7 +20,7 @@ for i in $(kubectl get applications -o name -n $NAME)
 do
   kubectl patch  $i --type json --patch='[ { "op": "remove", "path": "/metadata/finalizers" } ]' -n $NAME
 done
-for OBJ in apps deployments replicaset pods service statefulset
+for OBJ in apps deployments replicaset pods service statefulset sealedSecret secrets
 do
   kubectl get $OBJ --no-headers -n $NAME| awk '{print $1}' | xargs kubectl  -n $NAME delete $OBJ
 done
