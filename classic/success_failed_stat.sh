@@ -5,6 +5,7 @@
 usage() {
   echo "Usage: `basename $0` [--from=YYYY-MM-DD] [--to=YYYY-MM-DD] PIPELINE_ID"
 }
+test $# -eq 0 && usage
 
 while [ "1" ]; do
   ((PAGE++))
