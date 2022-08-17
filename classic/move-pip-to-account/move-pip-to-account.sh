@@ -20,8 +20,8 @@ src_prj=$1 dest_prj=$2 src_ctx=$3 dest_ctx=$4
 
 # if dest_ctx was passed, meaning that src_ctx is passed as well, then use it,
 # otherwise dest_ctx=$3=$src_ctx
-test -n "$dest_ctx" && {  codefresh auth use-context $src_ctx; } || { export dest_ctx=$src_ctx; unset src_ctx; } 
-#echo $dest_ctx
+test -n "$dest_ctx" || { export dest_ctx=$src_ctx; unset src_ctx; } 
+test -z "$src_ctx"  || codefresh auth use-context $src_ctx || { exit 1; }
 
 # Store the key, used to delete source pipelines earlier without switching
 # context constantly
@@ -34,7 +34,7 @@ dp=$dest_prj.json
 codefresh get pip --project $src_prj --limit 10 -o json > $sp
 
 # project was not found, create one instead
-codefresh auth use-context $dest_ctx
+codefresh auth use-context $dest_ctx || { exit 1; }
 codefresh get project $dest_prj &>/dev/null && { echo "Project exists, continuing..."; } || \
   {  echo "Creating project '$dest_prj'"; codefresh create project $dest_prj; }
 
@@ -55,8 +55,10 @@ for id in $( yq e '.[].metadata.id' $dp); do
   yq -P e '.[] | select(.metadata.id==env(id))' $dp > $id.yaml
   echo "Deleting old pipeline"
   CF_API_KEY=$CF_API_KEY codefresh delete pip $id || { echo "Deleting failed"; exit; }
-  echo "Creating new pipeline"
-  codefresh create pip -f $id.yaml
+  echo "Creating new pipeline"      # test with removed token
+  codefresh create pip -f $id.yaml || { echo "Creation failed, reverting deletion.."; \
+                                        CF_API_KEY=$CF_API_KEY codefresh create pip -f $id.yaml; \
+                                        exit; }
 done
 
 # Remove files
