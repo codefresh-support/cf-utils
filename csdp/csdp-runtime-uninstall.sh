@@ -14,15 +14,16 @@ NAME="$1"
 echo "Removing CSDP runtime $NAME"
 cf runtime uninstall --force "$NAME" --silent
 
-echo "Deleting remaining objects"
 # Edit apps to remove finalizers
+echo "Deletting apps finalizers"
 for i in $(kubectl get applications -o name -n $NAME)
 do
   kubectl patch  $i --type json --patch='[ { "op": "remove", "path": "/metadata/finalizers" } ]' -n $NAME
 done
 
-for OBJ in apps deployments replicaset pods service statefulset configmap sealedSecret secrets
+for OBJ in apps deployments replicaset pods service statefulset configmap sealedSecret secret eventbus ingress sensor
 do
+  echo "Deleting $OBJ"
   kubectl get $OBJ --no-headers -n $NAME| awk '{print $1}' | xargs kubectl  -n $NAME delete $OBJ
 done
 
