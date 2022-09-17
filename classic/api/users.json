@@ -7,7 +7,7 @@
     "roles": [
       "User"
     ],
-    "defaultAccount": 0,
+    "defaultAccount": 1,
     "account": [
       "6116c860398361ee8943441c",
       "612c9a543ba6265134394298"
@@ -22,14 +22,11 @@
       "name": "Oleg Sergiyuk"
     },
     "register_date": "2021-08-13T19:30:40.902Z",
-    "last_login_date": "2022-06-15T09:09:59.912Z",
+    "last_login_date": "2022-09-06T08:30:34.617Z",
     "hasPassword": false,
     "notifications": [
       {
-        "events": [
-          "build-success",
-          "build-failure"
-        ],
+        "events": [],
         "type": "mail",
         "mail": {}
       }
@@ -75,7 +72,8 @@
     "account": [
       "612c9a543ba6265134394298",
       "5f8db07b4e6ba71a9d6a4bdb",
-      "6116c860398361ee8943441c"
+      "6116c860398361ee8943441c",
+      "5672d8deb6724b6e359adf62"
     ],
     "status": "new",
     "user_data": {
@@ -86,15 +84,12 @@
       "image": "https://lh3.googleusercontent.com/a-/AOh14Gg1Lb_9rW8zRKvr9T93MdlseRl077YtDiUl7TZS=s50",
       "name": "Oleg Sergiyuk"
     },
-    "register_date": "2021-08-30T08:44:05.120Z",
-    "last_login_date": "2022-03-20T14:48:08.945Z",
+    "register_date": "2021-08-30T08::44:05.120Z",
+    "last_login_date": "2022-09-15T15:51:34.989Z",
     "hasPassword": false,
     "notifications": [
       {
-        "events": [
-          "build-failure",
-          "build-success"
-        ],
+        "events": [],
         "type": "mail",
         "mail": {}
       }

@@ -1,0 +1,110 @@
+- version: "1.0"
+  kind: pipeline
+  metadata:
+    name: destination/562
+    id: 61c4b45f573e9921145f0b22
+    accountId: 5f8db07b4e6ba71a9d6a4bdb
+    project: destination
+  spec:
+    steps: {}
+    triggers: []
+    stages: []
+- version: "1.0"
+  kind: pipeline
+  metadata:
+    name: destination/561
+    id: 61c4b45c573e99c3765f0b21
+    accountId: 5f8db07b4e6ba71a9d6a4bdb
+    project: destination
+  spec:
+    steps: {}
+    triggers: []
+    stages: []
+- version: "1.0"
+  kind: pipeline
+  metadata:
+    name: destination/560
+    id: 61c4b459573e99fa9f5f0b20
+    accountId: 5f8db07b4e6ba71a9d6a4bdb
+    project: destination
+  spec:
+    steps: {}
+    triggers: []
+    stages: []
+- version: "1.0"
+  kind: pipeline
+  metadata:
+    name: destination/559
+    id: 61c4b45612d6baf9e9dfa7aa
+    accountId: 5f8db07b4e6ba71a9d6a4bdb
+    project: destination
+  spec:
+    steps: {}
+    triggers: []
+    stages: []
+- version: "1.0"
+  kind: pipeline
+  metadata:
+    name: destination/558
+    id: 61c4b454573e99df005f0b1f
+    accountId: 5f8db07b4e6ba71a9d6a4bdb
+    project: destination
+  spec:
+    steps: {}
+    triggers: []
+    stages: []
+- version: "1.0"
+  kind: pipeline
+  metadata:
+    name: destination/557
+    id: 61c4b45112d6ba1daddfa7a9
+    accountId: 5f8db07b4e6ba71a9d6a4bdb
+    project: destination
+  spec:
+    steps: {}
+    triggers: []
+    stages: []
+- version: "1.0"
+  kind: pipeline
+  metadata:
+    name: destination/556
+    id: 61c4b44e12d6ba30fbdfa7a8
+    accountId: 5f8db07b4e6ba71a9d6a4bdb
+    project: destination
+  spec:
+    steps: {}
+    triggers: []
+    stages: []
+- version: "1.0"
+  kind: pipeline
+  metadata:
+    name: destination/555
+    id: 61c4b44b573e9900695f0b1e
+    accountId: 5f8db07b4e6ba71a9d6a4bdb
+    project: destination
+  spec:
+    steps: {}
+    triggers: []
+    stages: []
+- version: "1.0"
+  kind: pipeline
+  metadata:
+    name: destination/554
+    id: 61c4b44812d6ba3d52dfa7a7
+    accountId: 5f8db07b4e6ba71a9d6a4bdb
+    project: destination
+  spec:
+    steps: {}
+    triggers: []
+    stages: []
+- version: "1.0"
+  kind: pipeline
+  metadata:
+    name: destination/553
+    id: 61c4b44512d6ba0ca5dfa7a6
+    accountId: 5f8db07b4e6ba71a9d6a4bdb
+    project: destination
+  spec:
+    steps: {}
+    triggers: []
+    stages: []
