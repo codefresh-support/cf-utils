@@ -1,4 +1,4 @@
-ffffffff### Generate workflow that references workflowTemplate
+### Generate workflow that references workflowTemplate
 
 ##### Usage: create-workflow-from-template.sh WORKFLOW_TEMPLATE [TEMPLATE|all]
 
