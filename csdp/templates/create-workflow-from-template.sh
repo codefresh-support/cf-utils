@@ -18,7 +18,7 @@ function createTemplateRef() {
   
   # Accept workflowTemplate.yaml as an argument
   INPUT=$1
-#  echo "[DEBUG] Processing $INPUT..."
+  #echo "[DEBUG] Processing $INPUT..."
 
   # Second argument is optional and is a tempalte name 
   action=$2
@@ -34,18 +34,16 @@ function createTemplateRef() {
   # Parse initial template
   #
   # Get workflowTemplate name. Calling template name will be constructed as {action}:{templateRef}
-  set -x
   templateRef=`cat $INPUT | yq-print '.metadata.name' -`
-  echo "[DEBUG] templateRef: ${templateRef}"
+  #echo "[DEBUG] templateRef: ${templateRef}"
 
   # Extract template in a variable
   template=`cat $INPUT | yq-json | jq --arg t "$action" '.spec.templates[] | select(.name == $t)'`
+  #echo -e "[DEBUG] template:\n$template"
 
-  echo -e "[DEBUG] template:\n$template"
-
-#  echo -e "[DEBUG] Getting inputs\n"
   # If has inputs.parameters, copy them under templates.name
-  inputs=$( echo "$template" | jq -c 'select(has("inputs")) | .inputs' )
+  inputs=$( echo "$template" | jq -c 'select(has("inputs")) | .inputs | del(.artifacts)' - )
+
 #  echo -e "[DEBUG] inputs:\n$inputs"
 
 #  echo "[DEBUG] constructing template name.."
@@ -102,7 +100,7 @@ WORKFLOW_TEMPLATE="$1"
 # Collect all the templates under directory. From 'argo-hub.<tmpl_name>.<ver>' to <tmpl_name>
 WORK_DIR=$( yq-print '.metadata.name | sub("(argo-hub.)?([^.]+)(.\d.*)","${2}")' ${WORKFLOW_TEMPLATE} )
 mkdir -vp $WORK_DIR     # -p to ignore existing directories
-echo "Storing templates in '$WORK_DIR'"
+echo "[DEBUG]Storing templates in '$WORK_DIR'"
 
 # Figure out which template to process. Store templates in
 # array to allow iteration
@@ -115,6 +113,7 @@ if [ -n "$2" ]; then
   fi 
 else
   #+if no arguments were passed, issue select() prompt
+  echo "Choose the template to process: "
   select t in ${templates[@]}
   do
     [ -n "$t" ] && break
@@ -126,7 +125,9 @@ fi
    
 # put the templates under directory
 for TEMPLATE in ${templates[@]}; do
-  echo "processing template '$template'..."
+  echo "processing template '$TEMPLATE'..."
   # call to createTemplateRef() here
   createTemplateRef "$WORKFLOW_TEMPLATE" "$TEMPLATE"
 done
+
+echo "All the templates stored under '$WORK_DIR'"
