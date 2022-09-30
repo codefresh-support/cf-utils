@@ -34,13 +34,14 @@ function createTemplateRef() {
   # Parse initial template
   #
   # Get workflowTemplate name. Calling template name will be constructed as {action}:{templateRef}
+  set -x
   templateRef=`cat $INPUT | yq-print '.metadata.name' -`
-#  echo "[DEBUG] templateRef: ${templateRef}"
+  echo "[DEBUG] templateRef: ${templateRef}"
 
   # Extract template in a variable
   template=`cat $INPUT | yq-json | jq --arg t "$action" '.spec.templates[] | select(.name == $t)'`
 
-#  #echo -e "[DEBUG] template:\n$template"
+  echo -e "[DEBUG] template:\n$template"
 
 #  echo -e "[DEBUG] Getting inputs\n"
   # If has inputs.parameters, copy them under templates.name
@@ -89,21 +90,34 @@ function createTemplateRef() {
 }
 
 WORKFLOW_TEMPLATE="$1"
-# Collect all the templates under directory
+# Collect all the templates under directory. From 'argo-hub.<tmpl_name>.<ver>' to <tmpl_name>
 WORK_DIR=$( yq-print '.metadata.name | sub("(argo-hub.)?([^.]+)(.\d.*)","${2}")' ${WORKFLOW_TEMPLATE} )
 mkdir -vp $WORK_DIR     # -p to ignore existing directories
 echo "Storing templates in '$WORK_DIR'"
 
-if [ -z "$2" ]; then
-  echo "Creating workflow files for all found templates"
-  templates=( $( yq-print '.spec.templates[].name' "$WORKFLOW_TEMPLATE" ) )
+# Figure out which template to process. Store templates in
+# array to allow iteration
+declare -a templates=( `yq -P e '.spec.templates[].name' "$WORKFLOW_TEMPLATE"` )
+if [ -n "$2" ]; then
+  if [[ "$2" = "all" ]]; then
+    echo "creating workflow files for all found templates"
+  else
+    templates=( "${@:2}" )  # template was specified explicitly, from 2nd element onward
+  fi 
 else
-  templates=( "$2"  ) 
+  #+if no arguments were passed, issue select() prompt
+  select t in ${templates[@]}
+  do
+    [ -n "$t" ] && break
+    echo "choose from the available selections"
+  done
+  templates=( "$t" )
+  # special option 'all' will create workflow files for each found template
 fi
    
-   #
 # put the templates under directory
 for TEMPLATE in ${templates[@]}; do
-  echo "Processing template '$TEMPLATE'..."
+  echo "processing template '$template'..."
+  # call to createTemplateRef() here
   createTemplateRef "$WORKFLOW_TEMPLATE" "$TEMPLATE"
 done
