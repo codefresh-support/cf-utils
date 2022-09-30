@@ -89,6 +89,15 @@ function createTemplateRef() {
   fi
 }
 
+### START
+[ -n "$1" ] || { \
+  echo "Usage: `basename $0` WORKFLOW_TEMPLATE [TEMPLATE|all]"
+  echo "Generate workflow for the referenced template. WORKFLOW_TEMPLATE is usually"
+  echo "workflowTemplate.yaml file and TEMPLATE is one specified inside this file. If template"
+  echo "was not specified, select prompt will be issued, special string 'all' will iterate over all the found templates"
+  echo "and create file for each of them. After script is run generated files are found in the separate directory"
+  exit 0;
+}
 WORKFLOW_TEMPLATE="$1"
 # Collect all the templates under directory. From 'argo-hub.<tmpl_name>.<ver>' to <tmpl_name>
 WORK_DIR=$( yq-print '.metadata.name | sub("(argo-hub.)?([^.]+)(.\d.*)","${2}")' ${WORKFLOW_TEMPLATE} )
