@@ -1,4 +1,4 @@
-### Generate workflow that references workflowTemplate
+ffffffff### Generate workflow that references workflowTemplate
 
 ##### Usage: create-workflow-from-template.sh WORKFLOW_TEMPLATE [TEMPLATE|all]
 
@@ -58,7 +58,7 @@ will result in:
                     - name: GITHUB_USER
                       value: '{{ inputs.parameters.GITHUB_USER }}'
 
-Please notice that `.inputs.parameters` part was added that is necessary for delivery pipeline to accept arguments in UI for example, thus is almost always mandatory, values in `.arguments.parameters` were converted to read `.inputs.parameters`. `.inputs.artifact` were removed.
+Please notice that `.inputs.parameters` part was added that is necessary for delivery pipeline to accept arguments in UI for example, thus is almost always mandatory, values in `.arguments.parameters` were converted to read `.inputs.parameters`. `.inputs.artifacts` were removed.
 
  If template was not specified, select prompt will be issued:
 
@@ -72,4 +72,6 @@ Please notice that `.inputs.parameters` part was added that is necessary for del
     5) create-pr-codefresh
     #? 
 
-Special string `all` can specified instead of `TEMPLATE` in which case, **a**ll the templates will be iterated over and workflow file will be created for each of them. After script is run generated files are found in the separate directory, name depends on the referenced template filename. 
+Special string `all` can specified instead of `TEMPLATE` in which case, **a**ll the templates will be iterated over and workflow file will be created for each of them. After script is run generated files are found in the separate directory, name depends on the referenced template filename.
+
+    All the templates stored under 'jira'
