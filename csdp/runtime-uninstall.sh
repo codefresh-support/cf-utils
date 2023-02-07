@@ -15,7 +15,7 @@ echo "Removing CSDP runtime $NAME"
 cf runtime uninstall --force "$NAME" --silent
 
 # Edit OBJs to remove finalizers
-for OBJ in apps secrets eventbus sensor eventsource
+for OBJ in apps secrets eventbus sensor eventsource AppProject
 do
   echo "Deleting finalizers for $OBJ"
   for i in $(kubectl get $OBJ -o name -n $NAME)
