@@ -15,6 +15,9 @@ def main():
     log_format = "%(asctime)s:%(levelname)s:%(name)s.%(funcName)s: %(message)s"
     logging.basicConfig(format = log_format, level = LOG_LEVEL.upper())
 
+    if CF_API_KEY == None:
+        logging.error("CF_API_KEY is not set")
+        sys.exit(1)
     teams=get_teams()
     pipelines=get_pipelines(sys.argv)
     abac=get_permissions(teams)
