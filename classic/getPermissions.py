@@ -7,7 +7,7 @@ import urllib.parse
 
 CF_URL      = os.getenv('CF_URL', 'https://g.codefresh.io')
 CF_API_KEY  = os.getenv('CF_API_KEY')
-LOG_LEVEL   = os.getenv('LOG_LEVEL', "info")
+LOG_LEVEL   = os.getenv('LOG_LEVEL', "error")
 
 #######################################################################
 
@@ -58,12 +58,16 @@ def process_data(pipelines,abac,teams):
 
     for pName in pipelines.keys():
         print(pName)
+        ALL=False
         for tag in pipelines[pName]:
             if tag in abac.keys():
                 printUsers(tag,abac,teams)
             else:
-                printUsers("*",abac,teams)
-
+                if ALL == False and '*' in abac.keys():
+                    printUsers("*",abac,teams)
+                    ALL=True
+                elif ALL == True:
+                    logging.info("Already process ALL tags rule for this pipeline")
 def printUsers(tag, abac, teams):
     logging.info("Entering printUsers: %s", tag)
     print ("  ", tag)
@@ -119,7 +123,10 @@ def get_pipelines(list):
             logging.error("Error: " + resp.text)
             sys.exit(resp.status_code)
         data=resp.json()
-        tags=data['metadata']['labels']['tags']
+        if 'labels' in data['metadata']:
+            tags=data['metadata']['labels']['tags']
+        else:
+            tags=['untagged']
         pipelines[pName]=tags
     return pipelines
 
