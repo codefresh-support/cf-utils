@@ -5,30 +5,52 @@ Script to display users permissions on a set of pipelines
 
 import os
 import sys
-import json
+import argparse
 import logging
 import urllib.parse
 import requests
 
-CF_URL      = os.getenv('CF_URL', 'https://g.codefresh.io')
-CF_API_KEY  = os.getenv('CF_API_KEY')
-LOG_LEVEL   = os.getenv('LOG_LEVEL', "error")
+CF_API_KEY = None
+CF_URL     = None
 
 #######################################################################
 
+def parse_arguments():
+    '''Defining arguments to the script'''
+    parser = argparse.ArgumentParser(description='Get user permissions for pipelines')
+    parser.add_argument('pipeline',  nargs='+',
+        help='names of pipelines for which  to get permissions')
+    parser.add_argument('--log-level', default='error',
+        choices=['info', 'debug', 'warning', 'error', 'critical'],
+        help='set the log level')
+    parser.add_argument('--url', default='https://g.codefresh.io',
+        help='URL of the instance')
+    parser.add_argument('--api-key',
+        help='Codefresh API key. Can be passed as CF_API_KEY envionment variable')
+    args = parser.parse_args()
+    return args
+
 def main():
     '''main function'''
+    global CF_API_KEY
+    global CF_URL
+    args=parse_arguments()
+
     log_format = "%(asctime)s:%(levelname)s:%(name)s.%(funcName)s: %(message)s"
-    logging.basicConfig(format = log_format, level = LOG_LEVEL.upper())
+    logging.basicConfig(format = log_format, level = args.log_level.upper())
+
+    CF_API_KEY  = args.api_key if args.api_key else os.getenv('CF_API_KEY')
+    CF_URL= args.url
 
     if CF_API_KEY is None:
         logging.error("CF_API_KEY is not set")
         sys.exit(1)
+
     teams=get_teams()
-    pipelines=get_pipelines(sys.argv)
+    pipelines=get_pipelines(args.pipeline)
     abac=get_permissions(teams)
 
-    if LOG_LEVEL == 'debug':
+    if args.log_level == 'debug':
         print_teams(teams)
         print_pipelines (pipelines)
         print_abac(abac)
@@ -126,8 +148,7 @@ def get_pipelines(pipeline_list):
     url = CF_URL + '/api/pipelines/'
 
     pipelines={}
-    for i in range(1,len(pipeline_list)):
-        pipeline_name=pipeline_list[i]
+    for pipeline_name in pipeline_list:
         logging.info ("Processing pipeline %s", pipeline_name)
         encoded_pipeline_name=urllib.parse.quote_plus(pipeline_name)
         resp=requests.get(url + encoded_pipeline_name,
